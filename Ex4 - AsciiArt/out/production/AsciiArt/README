@@ -1,0 +1,51 @@
+tamuz1212
+312243439
+
+Using Collections explanation:
+BrightnessImgCharMatcher:
+                1. HashMap<Image, Float> cache - maps between sub images to average brightness.
+                On the function convertImageToAscii i calculate the average brightness of sub images of
+                image. if its the first time i calculate it i add it to the cache.
+                by doing so, i will avoid calculating it again next time that i need to use it.
+
+Shell:
+                1. Set<Character> charSet -
+                1.a - i chose to implement charSet as a set of Characters because
+                the order of the characters doesnt matter to me. and i can add and remove characters
+                in O(1), if i compare it to ArrayList that could also work in this case the cost
+                would have been O(n) for adding and removing.
+                1.b - another use is in showChars, i use the build in method of set name sorted(), which
+                sorts the set easily and then prints it.
+                1.c - at Render i use build in method toArray to convert charSet to array easily.
+
+                2. at addChars and removeChars - i use the build in method Stream.iterate over a range of chars
+                which allows me to iterate over it and add/removes chars from list easily.
+
+ascii_art.Algorithms
+1. findDuplicate:
+                Correctness: on the first loop i iterate over the array with two pointers.
+                advOnce - advances on numList one once each round
+                advTwice -  advances on numList twice each round
+                the first while loop will be over when pointers hit the same node.
+                this special node is located X steps from the duplicated value in numList
+                and also the first elem of numList is located X steps from the duplicated value in numList
+                this is why in the second loop i iterate over the array again with two pointers.
+                advOnceFromBeggining - advances from the beginning of numList once each round
+                advOnce - advances once each round from previous found node which is located X steps from the duplicated
+                value in numList.
+                the second while loop will be over when pointers hit the same node, containing the duplicated value.
+
+                Running Time: O(n) - running over the array until matching.
+
+                Space complexity - O(1) - for saving constants.
+
+2. uniqueMorseRepresentations:
+                Correctness: iterates over words, for each words translates it to morce representation and adds it
+                to morceSet, and updates counter if its not in morceSet already. this way way two words with same
+                representation will be count once.
+
+                Running Time: O(S) - where S is length of all the words together, because i iterate on words and
+                for each word i iterate over its letters.
+
+Provided picture for bonus - out.html file:
+                if you look closely you will see my dog yawning.

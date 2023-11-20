@@ -1,0 +1,33 @@
+tamuz1212
+312243439
+
+Clever strategy:
+Clever is a smart player who chooses a coordinate in the same row
+each time, this way he has better probability to win Whatever.
+if row is full he will move to the following row.
+
+Smarty strategy:
+Chooses the first coordinate that is empty or if snarty already choose
+a coordinate it will try to get a column strike. if another player chose
+coordinate in snarty's column he will start again from row 0 and
+next column.
+
+Whatever implementation:
+Randomly chooses a coordinate on board and tries to putMark on it,
+until success.
+
+running 500 games with SIZE = 6 and  WIN_STREAK = 4
+
+Round 1: Whatever vs Clever
+Result : === player 1: 18 | player 2: 482 | Draws: 0 ===
+
+Round 2: Whatever vs Snartypamts
+Result : === player 1: 0 | player 2: 500 | Draws: 0 ===
+
+Round 3: Clever vs Snartypamts
+Result : === player 1: 0 | player 2: 500 | Draws: 0 ===
+
+running 10000 games with SIZE = 6 and  WIN_STREAK = 4
+
+Round 1: Whatever vs Whatever
+Result : === player 1: 4930 | player 2: 5026 | Draws: 44 ===

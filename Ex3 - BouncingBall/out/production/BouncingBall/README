@@ -1,0 +1,151 @@
+tamuz1212
+312243439
+
+A.Project Design:
+  BrickerGameManager -  This class inherits from GameManager.
+                         Because BrickerGameManager creates and initializes a new "Bricker Game" its familiar with the
+                         following classes:
+                                           1. Ball
+                                           2. Border
+                                           3. Brick
+                                           3. GraphicLifeCounter
+                                           4. NumericLifeCounter
+                                           5. Paddle
+                                           6. BrickStrategyFactory
+                         All of this classes except BrickStrategyFactory are GameObjects that will be displayed on
+                         screen during the game, Ball, Paddle and Brick will be used as dynamic objects threw the game
+                         GraphicLifeCounter and NumericLifeCounter will be used to display the remaining lives of the
+                         player, and Border will be used to prevent from the ball to leave the field.
+                         BrickStrategyFactory will be use to define bricks strategy on collision.
+
+Package brick_strategies:
+   CollisionStrategy -  This class isn't familiar with any other class.
+                        CollisionStrategy is charge of removing thisObj when it collides with otherObj with out mining
+                        what are the classes of this GameObjects.
+                        CollisionStrategy is an Strategy Pattern that defines strategy when objects collides.
+                        Its useful because we can prevent code duplication by sending an instance of this object to
+                        another gameObjects for defining their strategy on collision instead of implementing the
+                        strategy in every class that wants to remove thisObj when it collides.
+
+   AddPaddleStrategy -  Introduces extra paddle to game window which remains until colliding.
+                        This class extends RemoveBrickStrategyDecorator and overrides onCollision function.
+                        on collision it will create a mock paddle if one wasnt initiated already.
+
+   BrickStrategyFactory - Factory class for creating Collision strategies.
+                        BrickStrategyFactory is a Factory Pattern that randomly returns a strategy for the brick when
+                        it collides.
+                        because the api includes the class RemoveBrickStrategyDecorator i thought that the best way
+                        to implement double Strategy would be by using the RemoveBrickStrategyDecorator like we saw in
+                        class with pizza and slices.
+                        in getStrategy i randomly choose a number that will define the number of strategies and with
+                        a helper function called chooseBehaviour i wrap the current strategy with a new randomly
+                        strategy.
+
+   ChangeCameraStrategy - Changes camera focus from ground to ball until ball collides
+                        NUM_BALL_COLLISIONS_TO_TURN_OFF times.
+                        This class extends RemoveBrickStrategyDecorator and overrides onCollision function.
+                        on collision the camera will follow the main ball in game until ball collides 4 times
+                        if its not following already.
+
+   ChangePaceStrategy - Drops a StatusSeter when ball collides with brick.
+                        This class extends RemoveBrickStrategyDecorator and overrides onCollision function.
+                        on collision it will drop a ChangePace object and when it collides with our paddle it will
+                        change the game speed.
+                        i will describe changePace class and why i chose to implement it that way below
+
+   PuckStrategy -       Introduces several pucks instead of brick once removed.
+                        This class extends RemoveBrickStrategyDecorator and overrides onCollision function.
+                        On collision it creates 3 Puck balls instead of the brick.
+
+   RemoveBrickStrategy - Concrete brick strategy implementing CollisionStrategy interface.
+                        This class is the base behaviour in game and all the other strategy's decorates it.
+
+   RemoveBrickStrategyDecorator - Abstract decorator to add functionality to the remove brick strategy,
+                        following the decorator pattern.
+                        On collision it activates onCollision function of the CollisionStrategy object to be decorated.
+Package gameobjects
+    Ball -             This class inherits from gameObject.
+                       Ball class has a special field "collisionSound" its purpose is to play a special sound
+                       when the ball collides with another object.
+                       although we implement a method called onCollisionEnter which determines the behaviour of
+                       ball when it collides with another GameObject, but it doesnt matter to the ball which
+                       GameObject it is, and that's the reason why Ball isn't familiar with any other classes.
+
+    BallCollisionCountdownAgent - It checks ball's collision counter every frame, and turns off the camera after
+                       4 hits.
+
+   Border -             This class inherits from gameObject.
+                        Its all purpose is to provide border for the screen, and for that reason its not familiar
+                        with any other classes.
+
+   Brick -              This class inherits from gameObject.
+                        Brick has a special field "CollisionStrategy" which defines the brick behaviour when another
+                        objects collides with the brick, for that reason Brick is familiar with CollisionStrategy
+                        class and calls the "onCollision" method of CollisionStrategy.
+
+   ChangePace -         specific status definer for changing the pace of the game when this object
+                        collides with paddle.
+                        I chose to implement it with inherents from StatusDefiner so it wont be possible to create an
+                        object of status definer with out a purpose. that way if a programmer wants to add a status
+                        definer he needs to create a new class and to define its behaviour on collision.
+
+   GraphicLifeCounter - This class inherits from gameObject.
+                        It has two special fields livesCounter and numOfLive
+                        livesCounter is a global lives counter of game, and numOfLive is aglobal setting of number
+                        of lives a player will have in a game.
+                        GraphicLifeCounter uses this fields for displaying the current lives of the player with
+                        GameObjects looking like hearts.
+                        GraphicLifeCounter overrides update function for displaying the hearts on screen.
+                        GraphicLifeCounter isn't familiar with any other classes.
+
+   NumericLifeCounter - This class inherits from gameObject.
+                        It has a special fields livesCounter which is a global lives counter of game, and numOfLive
+                        is a global setting of number of lives a player will have in a game.
+                        Its not familiar with any other classes.
+
+   Paddle -            This class inherits from gameObject.
+                       It has a special field inputListener for reading user input for moving the paddle on screen.
+                       it overrides update function for moving the paddle on screen when needed.
+                       Paddle isn't familiar with any other classes.
+
+   MockPaddle -        This class inherets from Paddle, it wont be instantiated more than once every time and
+                       after 3 hits with the ball it will disappear. to make it disappear i chose to use a counter
+                       that after 3 hits will remove the MockPaddle and it happens in onCollisionEnter method.
+
+   Puck -              Puck class inherits from Ball.
+                       the implementation just calls super.
+
+   StatusDefiner -     It defined the behaviour of this gameObject when it hits the paddle,and it helps Strategies
+                       classes. i chose to implement it as abstract class so it wont be possible to create an instants
+                       of this class with out defining its special behaviour on collision.
+Algo:
+1. alotStudyTime - Greedy Algorithm
+    Correctness: By sorting both of the arrays we can allocate the smallest legal time slot
+                 for the shortest task each round. that gives us the maximal amount of tasks that can be completed.
+    Running time: max(O(n(logn)),O(m(logm))) - (m,n is the length of the arrays)
+                 sorting both of the arrays is the expensive task in this algorithm.
+                 Notice that sorting array with Array.sort cost in the worst case O(n^2), but the Expected value is
+                 O(nlog(n))
+
+2. minLeap - Greedy Algorithm
+    Correctness: each leap we find the best leaf to leap to by jumping to the leap that will get us the furthest.
+    by choosing the best leap each jump we implement a greedy algorithm that will cause as to pick the minimum amount
+    of leaves to get to the end.
+    Running time: O(n) - each leaf is checked between one time to two times max and because we run over leaNum array,
+    which is of size n, its O(n).
+
+3.bucketWalk - Dynamic Programing Algorithm
+    Correctness: each round i calculated all the possible ways to fill the water trough. by choosing to carry 1 liter
+    of 2 liters each round.
+    This problem is equivalent to Fibonacci problem so the correctness of this algorithm derive
+                 from Fibonacci correctness.
+    Running time: O(n) - running over n iterations, and in each iteration i use only two cells that were previous
+    calculated.
+
+4.numTrees - Dynamic Programing Algorithm
+    Correctness: each round i calculate the number of structurally unique BST's with i nodes.
+    i use the previous cells to calculate it.
+    This problem is equivalent to Catalan Number problem so the correctness of this algorithm derive
+                 from Catalan Number correctness.
+    Running time: O(n^2) - running over n iterations. each iteration we run till j=i, at the end we will run in the
+    inner loop over n and for that reason its O(n^2).
